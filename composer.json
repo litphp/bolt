@@ -16,7 +16,7 @@
     }
   },
   "require": {
-    "litphp/lit": "^0.5",
+    "litphp/lit": "^0.6",
     "litphp/nexus": "^0.5",
     "litphp/cached-fast-route": "^0.5",
     "zendframework/zend-diactoros": "^1.3",
