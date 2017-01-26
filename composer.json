@@ -1,0 +1,32 @@
+{
+  "name": "litphp/bolt",
+  "description": "litphp micro-framework",
+  "license": "ISC",
+  "authors": [
+    {
+      "name": "McFog Wang",
+      "email": "mcfogw@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Lit\\Bolt\\": "src"
+    }
+  },
+  "require": {
+    "litphp/lit": "^0.5",
+    "litphp/nexus": "^0.5",
+    "litphp/cached-fast-route": "^0.5",
+    "zendframework/zend-diactoros": "^1.3",
+    "symfony/event-dispatcher": "^3.0",
+    "symfony/property-access": "^3.2",
+    "pimple/pimple": "^3.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
+  }
+}
