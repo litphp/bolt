@@ -30,21 +30,11 @@ abstract class BoltAction extends Action
 
     protected function getBodyParam($key, $default = null)
     {
-        $parsedBody = $this->request->getParsedBody();
-        if (!$this->container->accessor->isReadable($parsedBody, $key)) {
-            return $default;
-        }
-
-        return $this->container->accessor->getValue($parsedBody, $key);
+        return $this->container->get($this->request->getParsedBody(), $key, $default);
     }
 
     protected function getQueryParam($key, $default = null)
     {
-        $query = $this->request->getQueryParams();
-        if (!$this->container->accessor->isReadable($query, $key)) {
-            return $default;
-        }
-
-        return $this->container->accessor->getValue($query, $key);
+        return $this->container->get($this->request->getQueryParams(), $key, $default);
     }
 }

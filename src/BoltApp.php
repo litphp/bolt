@@ -14,14 +14,14 @@ class BoltApp extends App
     /**
      * @var BoltContainer
      */
-    protected $bolt;
+    protected $container;
 
-    public function __construct(BoltContainer $container = null)
+    public function __construct(BoltContainer $container)
     {
         parent::__construct($container->router);
 
-        $this->bolt = $container;
-        $this->bolt[static::class] = $this;
+        $this->container = $container;
+        $this->container[static::class] = $this;
 
         $this
             ->prepend([$this, 'wrapper'])
@@ -31,7 +31,7 @@ class BoltApp extends App
 
     }
 
-    public static function run(BoltContainer $container = null)
+    public static function run(BoltContainer $container)
     {
         $request = ServerRequestFactory::fromGlobals();
         $response = new Response();
@@ -46,7 +46,7 @@ class BoltApp extends App
     {
         $response = $next($request, $response);
 
-        $this->bolt->events->dispatch(self::EVENT_AFTER_LOGIC, new GenericEvent($this, [
+        $this->container->events->dispatch(self::EVENT_AFTER_LOGIC, new GenericEvent($this, [
             'request' => $request,
             'response' => $response,
         ]));

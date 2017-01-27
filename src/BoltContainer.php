@@ -3,14 +3,16 @@
 use FastRoute\DataGenerator;
 use FastRoute\Dispatcher;
 use FastRoute\RouteParser;
-use Lit\CachedFastRoute\CachedDispatcher;
 use Lit\Core\Interfaces\IRouter;
 use Lit\Core\Interfaces\IStubResolver;
 use Lit\Nexus\Traits\DiContainerTrait;
+use Lit\Nexus\Void\VoidSingleValue;
+use Nimo\Bundled\FixedResponseMiddleware;
 use Pimple\Container;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Zend\Diactoros\Response\EmptyResponse;
 
 /**
  * @property EventDispatcherInterface $events
@@ -29,14 +31,19 @@ class BoltContainer extends Container
 
         $this[BoltContainer::class] = $this;
         $this
-            ->alias(BoltRouter::class, IRouter::class)
-            ->alias(BoltStubResolver::class, IStubResolver::class)
-            ->provideParameter(CachedDispatcher::class, [
-//                'cache' => new VoidSingleValue(),
-//                'routeDefinition' => function() {},
+            ->alias(BoltRouter::class, IRouter::class)//lit-core
+            ->alias(BoltStubResolver::class, IStubResolver::class)//lit-core
+            ->alias(DataGenerator\GroupCountBased::class, DataGenerator::class)//fast-route
+            ->alias(RouteParser\Std::class, RouteParser::class)//fast-route
+            ->provideParameter(BoltRouter::class, [
+                'cache' => new VoidSingleValue(),
+                'routeDefinition' => function () {
+                    return $this->produce(BoltRouteDefinition::class);
+                },
                 'dispatcherClass' => Dispatcher\GroupCountBased::class,
-                DataGenerator::class => DataGenerator\GroupCountBased::class,
-                RouteParser::class => RouteParser\Std::class,
+                'notFound' => function () {
+                    return $this->protect(new FixedResponseMiddleware(new EmptyResponse(404)));
+                },
             ])
             ->provideParameter(PropertyAccessor::class, [
                 'magicCall' => false,
@@ -56,5 +63,23 @@ class BoltContainer extends Container
     function __isset($name)
     {
         return $this->offsetExists($name);
+    }
+
+    /**
+     * grab $target's $key value, while not available, return $default instead
+     * delegate to symfony/property-access
+     *
+     * @param mixed $target array or object target
+     * @param string $key support symfony/property-access key format
+     * @param null $default default value while $key is not available
+     * @return mixed
+     */
+    public function get($target, $key, $default = null)
+    {
+        if(!$this->accessor->isReadable($target, $key)) {
+            return $default;
+        }
+
+        return $this->accessor->getValue($target, $key);
     }
 }
