@@ -10,7 +10,7 @@ use Zend\Diactoros\ServerRequestFactory;
 
 class BoltApp extends App
 {
-    const EVENT_AFTER_LOGIC = 'es.app.afterLogic';
+    const EVENT_AFTER_LOGIC = 'bolt.app.afterLogic';
     /**
      * @var BoltContainer
      */
@@ -36,7 +36,8 @@ class BoltApp extends App
         $request = ServerRequestFactory::fromGlobals();
         $response = new Response();
 
-        $response = call_user_func(new static($container), $request, $response);
+        /** @noinspection PhpParamsInspection */
+        $response = call_user_func($container->produce(static::class), $request, $response);
 
         $emitter = new SapiEmitter();
         $emitter->emit($response);
