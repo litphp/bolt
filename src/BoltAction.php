@@ -15,11 +15,12 @@ abstract class BoltAction extends Action
         $this->container = $container;
     }
 
-    public function renderJson(array $data = [])
+    public function json()
     {
-        return $this->renderView(new JsonView(), $data);
-    }
+        $view = (new JsonView())->setJsonOption(JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
+        return $this->attachView($view);
+    }
 
     public function redirect($url, $status = 302)
     {
