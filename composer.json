@@ -19,7 +19,6 @@
     "litphp/lit": "^0.7",
     "litphp/nexus": "^0.6",
     "litphp/cached-fast-route": "^0.5",
-    "zendframework/zend-diactoros": "^1.3",
     "symfony/event-dispatcher": "^3.0",
     "symfony/property-access": "^3.2",
     "pimple/pimple": "^3.0"
