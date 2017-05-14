@@ -1,5 +1,6 @@
 <?php namespace Lit\Bolt;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Lit\Core\App;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,36 +17,37 @@ class BoltApp extends App
      */
     protected $container;
 
-    public function __construct(BoltContainer $container)
+    public function __construct(BoltContainer $container, ResponseInterface $responsePrototype = null)
     {
-        parent::__construct($container->router);
+        if (is_null($responsePrototype)) {
+            $responsePrototype = new Response();
+        }
+
+        parent::__construct($container->router, $responsePrototype);
 
         $this->container = $container;
         $this->container[static::class] = $this;
-
-        $this
-            ->prepend([$this, 'wrapper'])
-//            ->append($this->bolt->produce(JsonRequestMiddleware::class))
-            //default error handler?
-        ;
-
+        $this->container->stubResolver->setResponsePrototype($responsePrototype);
     }
 
     public static function run(BoltContainer $container)
     {
         $request = ServerRequestFactory::fromGlobals();
-        $response = new Response();
 
-        /** @noinspection PhpParamsInspection */
-        $response = call_user_func($container->produce(static::class), $request, $response);
+        $response = $container->produce(static::class)->process($request, new class implements DelegateInterface{
+            public function process(ServerRequestInterface $request)
+            {
+                throw new \Exception(__METHOD__ . '/' . __LINE__);
+            }
+        });
 
         $emitter = new SapiEmitter();
         $emitter->emit($response);
     }
 
-    public function wrapper(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $response = $next($request, $response);
+        $response = parent::process($request, $delegate);
 
         $this->container->events->dispatch(self::EVENT_AFTER_LOGIC, new GenericEvent($this, [
             'request' => $request,

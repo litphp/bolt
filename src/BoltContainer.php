@@ -16,7 +16,7 @@ use Zend\Diactoros\Response\EmptyResponse;
 
 /**
  * @property EventDispatcherInterface $events
- * @property IStubResolver $stubResolver
+ * @property BoltStubResolver $stubResolver
  * @property IRouter $router
  * @property BoltApp $app
  * @property PropertyAccessor $accessor

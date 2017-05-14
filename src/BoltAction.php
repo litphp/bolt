@@ -24,7 +24,7 @@ abstract class BoltAction extends Action
 
     public function redirect($url, $status = 302)
     {
-        return $this->response
+        return $this->responsePrototype
             ->withHeader('Location', $url)
             ->withStatus($status);
     }
