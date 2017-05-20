@@ -1,6 +1,7 @@
 <?php namespace Lit\Bolt;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Lit\Core\Action;
 use Lit\Core\App;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,6 +29,9 @@ class BoltApp extends App
         $this->container = $container;
         $this->container[static::class] = $this;
         $this->container->stubResolver->setResponsePrototype($responsePrototype);
+        $this->container->provideParameter(Action::class, [
+             'responsePrototype' => $responsePrototype,
+        ]);
     }
 
     public static function run(BoltContainer $container)
