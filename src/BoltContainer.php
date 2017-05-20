@@ -3,12 +3,15 @@
 use FastRoute\DataGenerator;
 use FastRoute\Dispatcher;
 use FastRoute\RouteParser;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Lit\Core\Interfaces\IRouter;
 use Lit\Core\Interfaces\IStubResolver;
 use Lit\Nexus\Traits\DiContainerTrait;
 use Lit\Nexus\Void\VoidSingleValue;
 use Nimo\Bundled\FixedResponseMiddleware;
 use Pimple\Container;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -42,7 +45,13 @@ class BoltContainer extends Container
                 },
                 'dispatcherClass' => Dispatcher\GroupCountBased::class,
                 'notFound' => function () {
-                    return $this->protect(new FixedResponseMiddleware(new EmptyResponse(404)));
+                    return new class implements MiddlewareInterface{
+                        public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+                        {
+                            return new EmptyResponse(404);
+                        }
+
+                    };
                 },
             ])
             ->provideParameter(PropertyAccessor::class, [
