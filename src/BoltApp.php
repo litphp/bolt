@@ -23,10 +23,10 @@ class BoltApp extends App
         if (is_null($responsePrototype)) {
             $responsePrototype = new Response();
         }
+        $this->container = $container;
 
         parent::__construct($container->router, $responsePrototype);
 
-        $this->container = $container;
         $this->container[static::class] = $this;
         $this->container->stubResolver->setResponsePrototype($responsePrototype);
         $this->container->provideParameter(Action::class, [
