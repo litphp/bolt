@@ -36,7 +36,7 @@ class BoltStubResolver implements IStubResolver
         ];
 
         if (is_string($stub) && class_exists($stub)) {
-            return $this->container->produce($stub, $extraParameters);
+            return $this->container->instantiate($stub, $extraParameters);
         }
 
         //[$className, $params]
