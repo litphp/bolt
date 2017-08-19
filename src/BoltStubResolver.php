@@ -35,16 +35,7 @@ class BoltStubResolver implements IStubResolver
             'responsePrototype' => $this->responsePrototype
         ];
 
-        if (is_string($stub) && class_exists($stub)) {
-            return $this->container->instantiate($stub, $extraParameters);
-        }
-
-        //[$className, $params]
-        if (is_array($stub) && count($stub) === 2 && class_exists($stub[0])) {
-            return $this->container->instantiate($stub[0], $stub[1] + $extraParameters);
-        }
-
-        throw new \RuntimeException("cannot understand stub");
+        return BoltContainerStub::tryParse($stub)->instantiateFrom($this->container, $extraParameters);
     }
 
     /**
