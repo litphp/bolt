@@ -18,7 +18,7 @@
   "require": {
     "litphp/cached-fast-route": "^0.6",
     "litphp/lit": "^0.7",
-    "litphp/nexus": "^0.6",
+    "litphp/nexus": "^0.7",
     "litphp/air": "^0.1",
     "symfony/event-dispatcher": "^3.0",
     "symfony/property-access": "^3.2",
