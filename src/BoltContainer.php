@@ -5,12 +5,11 @@ use FastRoute\Dispatcher;
 use FastRoute\RouteParser;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Lit\Air\Injection\SetterInjector;
+use Lit\Air\Psr\Container;
 use Lit\Core\Interfaces\IRouter;
 use Lit\Core\Interfaces\IStubResolver;
-use Lit\Nexus\Traits\DiContainerTrait;
 use Lit\Nexus\Void\VoidSingleValue;
-use Nimo\Bundled\FixedResponseMiddleware;
-use Pimple\Container;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -26,52 +25,63 @@ use Zend\Diactoros\Response\EmptyResponse;
  */
 class BoltContainer extends Container
 {
-    use DiContainerTrait;
-
-    public function __construct(array $values = [])
+    public function __construct(?array $config = null)
     {
-        parent::__construct($values);
+        parent::__construct(
+            [
+                Container::KEY_INJECTORS => ['value', [new SetterInjector()]],
+                BoltContainer::class => $this,
 
-        $this[BoltContainer::class] = $this;
-        $this
-            ->alias(BoltRouter::class, IRouter::class)//lit-core
-            ->alias(BoltStubResolver::class, IStubResolver::class)//lit-core
-            ->alias(DataGenerator\GroupCountBased::class, DataGenerator::class)//fast-route
-            ->alias(RouteParser\Std::class, RouteParser::class)//fast-route
-            ->provideParameter(BoltRouter::class, [
-                'cache' => new VoidSingleValue(),
-                'routeDefinition' => function () {
-                    return $this->produce(BoltRouteDefinition::class);
-                },
-                'dispatcherClass' => Dispatcher\GroupCountBased::class,
-                'notFound' => function () {
-                    return new class implements MiddlewareInterface{
-                        public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+                'stubResolver' => ['alias', IStubResolver::class],
+                IStubResolver::class => ['autowire', BoltStubResolver::class],//lit-core
+
+                DataGenerator::class => ['autowire', DataGenerator\GroupCountBased::class],//fast-route
+                RouteParser::class => ['autowire', RouteParser\Std::class],//fast-route
+
+                'accessor' => ['alias', PropertyAccessor::class],
+                PropertyAccessor::class => [
+                    'autowire',
+                    null,
+                    [
+                        false,// $magicCall
+                        true,// $throwExceptionOnInvalidIndex
+                    ]
+                ],
+
+                IRouter::class => ['alias', BoltRouter::class],//lit-core
+                'router' => ['alias', BoltRouter::class],
+                BoltRouter::class => [
+                    'autowire',
+                    null,
+                    [
+                        'cache' => new VoidSingleValue(),
+                        'routeDefinition' => self::alias(BoltRouteDefinition::class),
+                        'dispatcherClass' => Dispatcher\GroupCountBased::class,
+                        'notFound' => new class implements MiddlewareInterface
                         {
-                            return new EmptyResponse(404);
-                        }
+                            public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+                            {
+                                return new EmptyResponse(404);
+                            }
 
-                    };
-                },
-            ])
-            ->provideParameter(PropertyAccessor::class, [
-                'magicCall' => false,
-                'throwExceptionOnInvalidIndex' => true,
-            ])
-            ->alias(PropertyAccessor::class, 'accessor')
-            ->alias(BoltRouter::class, 'router')
-            ->alias(IStubResolver::class, 'stubResolver')
-            ->alias(EventDispatcher::class, 'events');
+                        },
+                    ]
+                ],
+
+                'events' => ['autowire', EventDispatcher::class],
+            ] +
+            ($config ?: [])
+        );
     }
 
     function __get($name)
     {
-        return $this->offsetGet($name);
+        return $this->get($name);
     }
 
     function __isset($name)
     {
-        return $this->offsetExists($name);
+        return $this->has($name);
     }
 
     /**
@@ -83,9 +93,9 @@ class BoltContainer extends Container
      * @param null $default default value while $key is not available
      * @return mixed
      */
-    public function get($target, $key, $default = null)
+    public function access($target, $key, $default = null)
     {
-        if(!$this->accessor->isReadable($target, $key)) {
+        if (!$this->accessor->isReadable($target, $key)) {
             return $default;
         }
 

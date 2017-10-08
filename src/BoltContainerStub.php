@@ -1,5 +1,7 @@
 <?php namespace Lit\Bolt;
 
+use Lit\Air\Factory;
+
 class BoltContainerStub
 {
     /**
@@ -38,11 +40,11 @@ class BoltContainerStub
 
     public function produceFrom(BoltContainer $container, $extraParameters = [])
     {
-        return $container->produce($this->className, $extraParameters + $this->extraParameters);
+        return Factory::of($container)->produce($this->className, $extraParameters + $this->extraParameters);
     }
 
     public function instantiateFrom(BoltContainer $container, $extraParameters = [])
     {
-        return $container->instantiate($this->className, $extraParameters + $this->extraParameters);
+        return Factory::of($container)->instantiate($this->className, $extraParameters + $this->extraParameters);
     }
 }

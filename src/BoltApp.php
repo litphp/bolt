@@ -1,8 +1,11 @@
 <?php namespace Lit\Bolt;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Lit\Air\Configurator;
+use Lit\Air\Factory;
 use Lit\Core\Action;
 use Lit\Core\App;
+use Lit\Nexus\Utilities\Inspector;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -27,18 +30,25 @@ class BoltApp extends App
 
         parent::__construct($container->router, $responsePrototype);
 
-        $this->container[static::class] = $this;
         $this->container->stubResolver->setResponsePrototype($responsePrototype);
-        $this->container->provideParameter(Action::class, [
-             'responsePrototype' => $responsePrototype,
+        Configurator::config($this->container, [
+            static::class => $this,
+            Action::class => [
+                'autowire',
+                null,
+                [
+                    'responsePrototype' => $responsePrototype,
+                ]
+            ],
         ]);
     }
 
     public static function run(BoltContainer $container)
     {
+        Inspector::setGlobalHandler();
         $request = ServerRequestFactory::fromGlobals();
 
-        $response = $container->produce(static::class)->process($request, new class implements DelegateInterface{
+        $response = Factory::of($container)->produce(static::class)->process($request, new class implements DelegateInterface{
             public function process(ServerRequestInterface $request)
             {
                 throw new \Exception(__METHOD__ . '/' . __LINE__);

@@ -1,15 +1,28 @@
 <?php namespace Lit\Bolt;
 
+use Lit\Air\Injection\SetterInjectionInterface;
 use Lit\Core\Action;
 use Lit\Core\JsonView;
 use Psr\Http\Message\ResponseInterface;
 
-abstract class BoltAction extends Action
+abstract class BoltAction extends Action implements SetterInjectionInterface
 {
     /**
      * @var BoltContainer
      */
     protected $container;
+
+    /**
+     * @param ResponseInterface $responsePrototype
+     * @return $this
+     */
+    public function setResponsePrototype(ResponseInterface $responsePrototype)
+    {
+        $this->responsePrototype = $responsePrototype;
+
+        return $this;
+    }
+
 
     public function __construct(BoltContainer $container)
     {
@@ -36,11 +49,11 @@ abstract class BoltAction extends Action
 
     protected function getBodyParam($key, $default = null)
     {
-        return $this->container->get($this->request->getParsedBody(), $key, $default);
+        return $this->container->access($this->request->getParsedBody(), $key, $default);
     }
 
     protected function getQueryParam($key, $default = null)
     {
-        return $this->container->get($this->request->getQueryParams(), $key, $default);
+        return $this->container->access($this->request->getQueryParams(), $key, $default);
     }
 }
