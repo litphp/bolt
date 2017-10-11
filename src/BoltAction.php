@@ -1,12 +1,14 @@
 <?php namespace Lit\Bolt;
 
-use Lit\Air\Injection\SetterInjectionInterface;
+use Lit\Air\Injection\SetterInjector;
 use Lit\Core\Action;
 use Lit\Core\JsonView;
 use Psr\Http\Message\ResponseInterface;
 
-abstract class BoltAction extends Action implements SetterInjectionInterface
+abstract class BoltAction extends Action
 {
+    const SETTER_INJECTOR = SetterInjector::class;
+
     /**
      * @var BoltContainer
      */
@@ -16,7 +18,7 @@ abstract class BoltAction extends Action implements SetterInjectionInterface
      * @param ResponseInterface $responsePrototype
      * @return $this
      */
-    public function setResponsePrototype(ResponseInterface $responsePrototype)
+    public function injectResponsePrototype(ResponseInterface $responsePrototype)
     {
         $this->responsePrototype = $responsePrototype;
 

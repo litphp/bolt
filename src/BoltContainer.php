@@ -27,19 +27,22 @@ class BoltContainer extends Container
 {
     public function __construct(?array $config = null)
     {
-        parent::__construct(
-            [
-                Container::KEY_INJECTORS => ['value', [new SetterInjector()]],
+        parent::__construct(($config ?: []) + [
+                Container::KEY_INJECTORS => function () {
+                    return [
+                        new SetterInjector(),
+                    ];
+                },
                 BoltContainer::class => $this,
 
-                'stubResolver' => ['alias', IStubResolver::class],
-                IStubResolver::class => ['autowire', BoltStubResolver::class],//lit-core
+                'stubResolver' => (object) ['alias', IStubResolver::class],
+                IStubResolver::class => (object) ['autowire', BoltStubResolver::class],//lit-core
 
-                DataGenerator::class => ['autowire', DataGenerator\GroupCountBased::class],//fast-route
-                RouteParser::class => ['autowire', RouteParser\Std::class],//fast-route
+                DataGenerator::class => (object) ['autowire', DataGenerator\GroupCountBased::class],//fast-route
+                RouteParser::class => (object) ['autowire', RouteParser\Std::class],//fast-route
 
-                'accessor' => ['alias', PropertyAccessor::class],
-                PropertyAccessor::class => [
+                'accessor' => (object) ['alias', PropertyAccessor::class],
+                PropertyAccessor::class => (object) [
                     'autowire',
                     null,
                     [
@@ -48,9 +51,9 @@ class BoltContainer extends Container
                     ]
                 ],
 
-                IRouter::class => ['alias', BoltRouter::class],//lit-core
-                'router' => ['alias', BoltRouter::class],
-                BoltRouter::class => [
+                IRouter::class => (object) ['alias', BoltRouter::class],//lit-core
+                'router' => (object) ['alias', BoltRouter::class],
+                BoltRouter::class => (object) [
                     'autowire',
                     null,
                     [
@@ -68,10 +71,8 @@ class BoltContainer extends Container
                     ]
                 ],
 
-                'events' => ['autowire', EventDispatcher::class],
-            ] +
-            ($config ?: [])
-        );
+                'events' => (object) ['autowire', EventDispatcher::class],
+            ]);
     }
 
     function __get($name)

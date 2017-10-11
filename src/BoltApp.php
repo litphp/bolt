@@ -27,20 +27,16 @@ class BoltApp extends App
             $responsePrototype = new Response();
         }
         $this->container = $container;
+        Configurator::config($this->container, [
+            static::class => $this,
+            Action::class.'::' => [
+                'responsePrototype' => $responsePrototype,
+            ],
+        ]);
 
         parent::__construct($container->router, $responsePrototype);
 
         $this->container->stubResolver->setResponsePrototype($responsePrototype);
-        Configurator::config($this->container, [
-            static::class => $this,
-            Action::class => [
-                'autowire',
-                null,
-                [
-                    'responsePrototype' => $responsePrototype,
-                ]
-            ],
-        ]);
     }
 
     public static function run(BoltContainer $container)
