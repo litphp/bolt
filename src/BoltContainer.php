@@ -35,15 +35,15 @@ class BoltContainer extends Container
                 },
                 BoltContainer::class => $this,
 
-                'stubResolver' => (object) ['alias', IStubResolver::class],
-                IStubResolver::class => (object) ['autowire', BoltStubResolver::class],//lit-core
+                'stubResolver' => ['$' => 'alias', IStubResolver::class],
+                IStubResolver::class => ['$' => 'autowire', BoltStubResolver::class],//lit-core
 
-                DataGenerator::class => (object) ['autowire', DataGenerator\GroupCountBased::class],//fast-route
-                RouteParser::class => (object) ['autowire', RouteParser\Std::class],//fast-route
+                DataGenerator::class => ['$' => 'autowire', DataGenerator\GroupCountBased::class],//fast-route
+                RouteParser::class => ['$' => 'autowire', RouteParser\Std::class],//fast-route
 
-                'accessor' => (object) ['alias', PropertyAccessor::class],
-                PropertyAccessor::class => (object) [
-                    'autowire',
+                'accessor' => ['$' => 'alias', PropertyAccessor::class],
+                PropertyAccessor::class => [
+                    '$' => 'autowire',
                     null,
                     [
                         false,// $magicCall
@@ -51,10 +51,10 @@ class BoltContainer extends Container
                     ]
                 ],
 
-                IRouter::class => (object) ['alias', BoltRouter::class],//lit-core
-                'router' => (object) ['alias', BoltRouter::class],
-                BoltRouter::class => (object) [
-                    'autowire',
+                IRouter::class => ['$' => 'alias', BoltRouter::class],//lit-core
+                'router' => ['$' => 'alias', BoltRouter::class],
+                BoltRouter::class => [
+                    '$' => 'autowire',
                     null,
                     [
                         'cache' => new VoidSingleValue(),
@@ -71,7 +71,7 @@ class BoltContainer extends Container
                     ]
                 ],
 
-                'events' => (object) ['autowire', EventDispatcher::class],
+                'events' => ['$' => 'autowire', EventDispatcher::class],
             ]);
     }
 
