@@ -1,8 +1,8 @@
-<?php namespace Lit\Bolt;
+<?php namespace Lit\Bolt\Router;
 
 use FastRoute\RouteCollector;
 
-abstract class BoltRouteDefinition
+abstract class FastRouteDefinition
 {
     abstract public function __invoke(RouteCollector $routeCollector);
 }

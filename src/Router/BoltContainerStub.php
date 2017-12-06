@@ -1,6 +1,7 @@
-<?php namespace Lit\Bolt;
+<?php namespace Lit\Bolt\Router;
 
 use Lit\Air\Factory;
+use Lit\Bolt\BoltContainer;
 
 class BoltContainerStub
 {
