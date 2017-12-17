@@ -16,10 +16,19 @@ class FastRouteConfiguration
     public static function default()
     {
         return [
-            RouterStubResolverInterface::class => ['$' => 'autowire', BoltStubResolver::class],//lit-core
+            RouterInterface::class => ['$' => 'alias', FastRouteRouter::class],
+            FastRouteRouter::class => [
+                '$' => 'autowire',
+                null,
+                [
+                    'notFound' => new EmptyResponse(404),
+                ]
+            ],
 
-            DataGenerator::class => ['$' => 'autowire', DataGenerator\GroupCountBased::class],//fast-route
-            RouteParser::class => ['$' => 'autowire', RouteParser\Std::class],//fast-route
+            RouterStubResolverInterface::class => ['$' => 'autowire', BoltStubResolver::class],
+
+            DataGenerator::class => ['$' => 'autowire', DataGenerator\GroupCountBased::class],
+            RouteParser::class => ['$' => 'autowire', RouteParser\Std::class],
             Dispatcher::class => [
                 '$' => 'autowire',
                 CachedDispatcher::class,
@@ -27,16 +36,6 @@ class FastRouteConfiguration
                     'cache' => new VoidSingleValue(),
                     'routeDefinition' => ['$' => 'alias', FastRouteDefinition::class],
                     'dispatcherClass' => Dispatcher\GroupCountBased::class,
-                ]
-            ],
-
-
-            RouterInterface::class => ['$' => 'alias', FastRouteRouter::class],
-            FastRouteRouter::class => [
-                '$' => 'autowire',
-                null,
-                [
-                    'notFound' => new EmptyResponse(404),
                 ]
             ],
         ];

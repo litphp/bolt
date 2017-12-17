@@ -4,5 +4,5 @@ use FastRoute\RouteCollector;
 
 abstract class FastRouteDefinition
 {
-    abstract public function __invoke(RouteCollector $routeCollector);
+    abstract public function __invoke(RouteCollector $routeCollector): void;
 }
