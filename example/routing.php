@@ -9,7 +9,6 @@ use Lit\Bolt\Router\FastRouteDefinition;
 use Lit\CachedFastRoute\FastRouteRouter;
 use Psr\Http\Message\ResponseInterface;
 
-
 require(__DIR__ . '/../vendor/autoload.php');
 
 class NotFoundAction extends BoltAction

@@ -20,5 +20,5 @@ class HelloAction extends BoltAction
 }
 
 BoltApp::run(new BoltContainer([
-    'businessLogicHandler' => ['$' => 'autowire', HelloAction::class]
+    BoltApp::MAIN_HANDLER => ['$' => 'autowire', HelloAction::class]
 ]));

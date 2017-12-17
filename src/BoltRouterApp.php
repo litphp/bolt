@@ -11,7 +11,6 @@ class BoltRouterApp extends RouterApp
     use ContainerAppTrait;
     use EventHookedAppTrait;
 
-
     public function __construct(BoltContainer $container, MiddlewareInterface $middleware = null)
     {
         $this->container = $container;

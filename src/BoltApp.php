@@ -10,10 +10,12 @@ class BoltApp extends App
     use ContainerAppTrait;
     use EventHookedAppTrait;
 
+    public const MAIN_HANDLER = 'BoltApp::MAIN_HANDLER';
+
     public function __construct(BoltContainer $boltContainer, MiddlewareInterface $middleware = null)
     {
         $this->container = $boltContainer;
-        $businessLogicHandler = $boltContainer->get('businessLogicHandler');
+        $businessLogicHandler = $boltContainer->get(self::MAIN_HANDLER);
         parent::__construct($businessLogicHandler, $middleware);
     }
 }
