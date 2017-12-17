@@ -8,7 +8,6 @@
       "email": "mcfogw@gmail.com"
     }
   ],
-  "minimum-stability": "dev",
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
@@ -19,8 +18,10 @@
     ]
   },
   "require": {
-    "litphp/cached-fast-route": "^0.7",
-    "litphp/lit": "^0.8",
+    "litphp/cached-fast-route": "^0.7@dev",
+    "litphp/lit": "^0.8@dev",
+    "litphp/nexus": "^0.8@dev",
+    "litphp/nimo": "^0.4@dev",
     "litphp/air": "^0.1",
     "symfony/event-dispatcher": "^3.0",
     "zendframework/zend-diactoros": "^1.6"
