@@ -18,7 +18,7 @@ trait ContainerAppTrait
         Inspector::setGlobalHandler();
         $factory = new Factory($container);
         $request = ServerRequestFactory::fromGlobals();
-        $response = $factory->produce(static::class)->handle($request);
+        $response = $container->getOrProduce(static::class)->handle($request);
 
         $emitter = new SapiEmitter();
         $emitter->emit($response);
