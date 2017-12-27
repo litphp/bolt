@@ -1,7 +1,6 @@
 <?php namespace Lit\Bolt;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Lit\Air\Factory;
 use Lit\Air\Injection\SetterInjector;
 use Lit\Air\Psr\Container;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -35,14 +34,5 @@ class BoltContainer extends Container
     function __isset($name)
     {
         return $this->has($name);
-    }
-
-    /**
-     * @param string $className
-     * @return object of $className
-     */
-    public function getOrProduce(string $className)
-    {
-        return $this->has($className) ? $this->get($className) : Factory::of($this)->produce($className);
     }
 }

@@ -16,9 +16,9 @@ trait ContainerAppTrait
     public static function run(BoltContainer $container = null)
     {
         Inspector::setGlobalHandler();
-        $factory = new Factory($container);
+        $factory = Factory::of($container);
         $request = ServerRequestFactory::fromGlobals();
-        $response = $container->getOrProduce(static::class)->handle($request);
+        $response = $factory->getOrProduce(static::class)->handle($request);
 
         $emitter = new SapiEmitter();
         $emitter->emit($response);
