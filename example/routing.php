@@ -1,9 +1,11 @@
 <?php
 
 use FastRoute\RouteCollector;
+use Lit\Air\Configurator;
 use Lit\Bolt\BoltAction;
 use Lit\Bolt\BoltContainer;
 use Lit\Bolt\BoltRouterApp;
+use Lit\Core\Interfaces\RouterInterface;
 use Lit\Router\FastRoute\FastRouteConfiguration;
 use Lit\Router\FastRoute\FastRouteDefinition;
 use Lit\Router\FastRoute\FastRouteRouter;
@@ -71,13 +73,10 @@ $config = [
             }
         };
     },
-    FastRouteRouter::class => [
-        '$' => 'autowire',
-        null,
-        [
+    RouterInterface::class => Configurator::singleton(FastRouteRouter::class, [
             'notFound' => NotFoundAction::class,
         ]
-    ],
+    ),
 ];
 
 BoltRouterApp::run(new BoltContainer($config + FastRouteConfiguration::default()));
