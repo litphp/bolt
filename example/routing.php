@@ -4,9 +4,9 @@ use FastRoute\RouteCollector;
 use Lit\Bolt\BoltAction;
 use Lit\Bolt\BoltContainer;
 use Lit\Bolt\BoltRouterApp;
-use Lit\Bolt\Router\FastRouteConfiguration;
-use Lit\Bolt\Router\FastRouteDefinition;
-use Lit\CachedFastRoute\FastRouteRouter;
+use Lit\Router\FastRoute\FastRouteConfiguration;
+use Lit\Router\FastRoute\FastRouteDefinition;
+use Lit\Router\FastRoute\FastRouteRouter;
 use Psr\Http\Message\ResponseInterface;
 
 require(__DIR__ . '/../vendor/autoload.php');

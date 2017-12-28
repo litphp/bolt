@@ -18,17 +18,22 @@
     ]
   },
   "require": {
-    "litphp/cached-fast-route": "^0.7@dev",
     "litphp/lit": "^0.8@dev",
     "litphp/nexus": "^0.8@dev",
     "litphp/nimo": "^0.4@dev",
-    "litphp/air": "^0.1",
+    "litphp/air": "^0.1.6",
     "symfony/event-dispatcher": "^3.0",
     "zendframework/zend-diactoros": "^1.6"
+  },
+  "require-dev": {
+    "litphp/router-fast-route": "^0.1@dev"
   },
   "extra": {
     "branch-alias": {
       "dev-master": "0.3.x-dev"
     }
+  },
+  "suggest": {
+    "litphp/router-fast-route": "suggested fast-route adapter and used by example"
   }
 }
