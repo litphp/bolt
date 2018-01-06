@@ -11,10 +11,13 @@
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "Lit\\Bolt\\": "src"
+      "Lit\\Bolt\\": ""
     },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ],
     "files": [
-      "./src/constants.php"
+      "./constants.php"
     ]
   },
   "require": {
